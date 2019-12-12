@@ -4,8 +4,6 @@
 using namespace std;
 using namespace sf;
 
-
-
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Konsep Pemrograman - Game Dev C++");
@@ -50,12 +48,24 @@ int main()
 	Run8.loadFromFile("images/ninja/png/Run__008.png");
 	Texture Run9;
 	Run9.loadFromFile("images/ninja/png/Run__009.png");
-
+	Texture bgText;
+	bgText.loadFromFile("images/graveyard/png/BG.png");
+	
+	Sprite bg;
+	bg.setTexture(bgText);
+	bg.setPosition(0, 0);
 	Sprite player;
-	player.setScale(1.0f, 1.0f);
+	player.setScale(0.5f, 0.5f);
+	player.setPosition(300, 200);
 	player.setOrigin(116.0f, 219.5f);
 	//player.setTexture(idle0);
 	
+	float gravitasi = 10.0f;
+	float massa = 1;
+	float unitP = 0.0001;
+	float accel = unitP * (gravitasi * massa);
+	float jarakPlayer = 0;
+	float velocity = 0;
 	//SET PENGHITUNG WAKTU
 	Clock clock;
 	Time time;
@@ -66,6 +76,16 @@ int main()
 	// run the program as long as the window is open
 	while (window.isOpen())
 	{
+		// vel = 0 = 0 + 1 = 1; << Iterasi pertama
+		// jar = 0 = 0 + 1 = 1l << It pertama
+		
+		// vel2 = 1 = 1 + 1 = 2;
+		// jar = 1 + 2 = 3;
+		velocity = velocity + accel;
+		jarakPlayer = jarakPlayer + velocity;
+		player.setPosition(player.getPosition().x, jarakPlayer);
+
+
 		time = clock.getElapsedTime();
 		currentTime = time.asSeconds();
 		player.setTexture(idle0, true);
@@ -93,16 +113,23 @@ int main()
 		else if (currentTime >= 0 * fps)
 			player.setTexture(idle0);
 
+		if (Keyboard::isKeyPressed(Keyboard::Escape))
+		{
+			player.setPosition(200, 200);
+			velocity = 0;
+			jarakPlayer = 200;
+		}
 		if (Keyboard::isKeyPressed(Keyboard::W))
 		{
 			player.setPosition(player.getPosition().x + 0, player.getPosition().y - 1);
 		}
 		if (Keyboard::isKeyPressed(Keyboard::D))
 		{
-			player.setPosition(player.getPosition().x + 1, player.getPosition().y + 0);
+			player.setPosition(player.getPosition().x + 0.1f, player.getPosition().y + 0);
 			//player.setRotation(player.getRotation() + 1.0f);
 			//player.setTexture(Run0, true);
 			//SET ANIMASI
+			player.setTexture(Run0, true);
 			if (currentTime >= 10 * fps)
 				clock.restart();
 			else if (currentTime >= 9 * fps)
@@ -143,7 +170,7 @@ int main()
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
-
+		window.draw(bg);
 		window.draw(player);
 		window.display();
 	}
