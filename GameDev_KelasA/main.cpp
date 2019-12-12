@@ -113,6 +113,10 @@ int main()
 		else if (currentTime >= 0 * fps)
 			player.setTexture(idle0);
 
+		if (Keyboard::isKeyPressed(Keyboard::Space))
+		{
+			velocity -= 2 * accel;
+		}
 		if (Keyboard::isKeyPressed(Keyboard::Escape))
 		{
 			player.setPosition(200, 200);
